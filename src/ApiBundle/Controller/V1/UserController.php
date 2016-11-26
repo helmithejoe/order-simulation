@@ -45,6 +45,9 @@ class UserController extends FOSRestController
         if($form->isValid())
         {
             $em = $this->getDoctrine()->getManager();
+            
+            $user->setToken(md5(random_int(1, 1000)));
+            
             $em->persist($user);
             $em->flush();
      

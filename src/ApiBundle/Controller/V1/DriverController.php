@@ -42,6 +42,9 @@ class DriverController extends FOSRestController
         if($form->isValid())
         {
             $em = $this->getDoctrine()->getManager();
+            
+            $driver->setToken(md5(random_int(1, 1000)));
+            
             $em->persist($driver);
             $em->flush();
      
@@ -71,6 +74,7 @@ class DriverController extends FOSRestController
             if ($form->isValid()) {
                 
                 $em = $this->getDoctrine()->getManager();
+                
                 $em->persist($driver);
                 $em->flush();
      

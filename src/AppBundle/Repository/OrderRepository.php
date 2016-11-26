@@ -12,4 +12,32 @@ use Doctrine\ORM\EntityRepository;
  */
 class OrderRepository extends EntityRepository
 {
+    public function findAllByUser($user_id)
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT o FROM AppBundle:Order o where o.user = :user'
+            )
+            ->setParameter('user', $user_id)
+            ->getResult();
+    }
+    
+    public function findAllByDriver($driver_id)
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT o FROM AppBundle:Order o where o.driver = :driver'
+            )
+            ->setParameter('driver', $driver_id)
+            ->getResult();
+    }
+    
+    public function findAllFree()
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT o FROM AppBundle:Order o where o.driver is null'
+            )
+            ->getResult();
+    }
 }

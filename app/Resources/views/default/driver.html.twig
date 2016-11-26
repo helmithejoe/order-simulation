@@ -1,0 +1,318 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3></h3>
+            </div>
+
+            <div class="title_right">
+            
+            </div>
+        </div>
+            
+            
+            <div class="clearfix"></div>
+            <div class="row">
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>New Order List</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Item Name</th>
+                          <th>Address</th>
+                          <th>Status</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody id="tbodyOrder"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            
+            
+            
+            <div class="clearfix"></div>
+            <div class="row">
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Job List</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Item Name</th>
+                          <th>Address</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tbodyJob"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            
+            
+            
+            
+            
+          </div>
+        </div>
+
+{% endblock %}
+
+{% block custom_js %}
+<script>
+
+var canTake = true;
+
+var takeAction = function(id){
+    if(!canTake) alert('You still in a job');
+    var confirm = true;
+    if(confirm) {
+        var data = {
+            "driver":{{ driver_id }} + ""
+        }
+        
+        $.ajax({
+            method: "PATCH",
+            url: "{{ api_endpoint }}/order/update/"+ id +".json",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(data)
+        })
+        .done(function( data ) {
+            if(typeof data.error !== 'undefined') alert(data.error);
+            else alert('Success');
+        });
+    }
+}
+
+var deliveryAction = function(id){
+    var confirm = true;
+    if(confirm) {
+        var data = {
+            "order":id + "",
+            "status":"3"
+        }
+        
+        $.ajax({
+            method: "POST",
+            url: "{{ api_endpoint }}/orderstatus/new.json",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(data)
+        })
+        .done(function( data ) {
+            if(typeof data.error !== 'undefined') alert(data.error);
+            else alert('Success');
+        });
+    }
+}
+
+var deliveredAction = function(id){
+    var confirm = true;
+    if(confirm) {
+        var data = {
+            "order":id + "",
+            "status":"4"
+        }
+        
+        $.ajax({
+            method: "POST",
+            url: "{{ api_endpoint }}/orderstatus/new.json",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(data)
+        })
+        .done(function( data ) {
+            if(typeof data.error !== 'undefined') alert(data.error);
+            else {
+                alert('Success');
+                canTake = true;
+            }
+        });
+    }
+}
+
+function sleep (time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+var refreshTableOrder = function(){
+    var e = '';
+    $.ajax({
+        method: "GET",
+        url: "{{ api_endpoint }}/orderFree.json"
+        //data: { name: "John", location: "Boston" }
+    })
+    .done(function( data ) {
+        var data = data.data;
+        
+        
+        for(var i=0;i<data.length;i++) {
+        
+            var status = data[i].order_statuses;
+        
+            var statusTxt = '<ul>';
+            for(var j=0;j<status.length;j++) {
+                //if(typeof status[j].status === 'undefined') continue;
+                
+                var formattedDate = new Date(status[j].status_datetime);
+                var d = formattedDate.getDate();
+                var m =  formattedDate.getMonth();
+                m += 1;  // JavaScript months are 0-11
+                var y = formattedDate.getFullYear();
+                var h = formattedDate.getHours();
+                var mi = formattedDate.getMinutes();
+                
+                statusTxt += '<li>' + status[j].status.description + ' : ' + d + '-' + m + '-' + y + ' ' + h + ':' + mi + '</li>';
+            }
+            statusTxt += '</ul>';
+        
+            e += '<tr>';
+                e += '<td>' + (i+1) + '</td>';
+                e += '<td>' + data[i].item.name + '</td>';
+                e += '<td>' + data[i].address + '</td>';
+                e += '<td>' + statusTxt + '</td>';
+                if(canTake)
+                    e += '<td><button onclick="takeAction(' + data[i].id + ')" type="button" class="btn btn-success">Take</button></td>';
+            e += '</tr>'
+            
+        }
+        
+        $('#tbodyOrder').html(e);
+        
+        sleep(500).then(() => {
+            refreshTableOrder();
+        });
+        
+    });
+}
+
+
+var refreshTableJob = function(){
+    var e = '';
+    $.ajax({
+        method: "GET",
+        url: "{{ api_endpoint }}/orderByDriver/{{ driver_id }}.json"
+        //data: { name: "John", location: "Boston" }
+    })
+    .done(function( data ) {
+        var data = data.data;
+        
+        
+        for(var i=0;i<data.length;i++) {
+        
+            var status = data[i].order_statuses;
+        
+            var statusTxt = '<ul>';
+            for(var j=0;j<status.length;j++) {
+                //if(typeof status[j].status === 'undefined') continue;
+                
+                var formattedDate = new Date(status[j].status_datetime);
+                var d = formattedDate.getDate();
+                var m =  formattedDate.getMonth();
+                m += 1;  // JavaScript months are 0-11
+                var y = formattedDate.getFullYear();
+                var h = formattedDate.getHours();
+                var mi = formattedDate.getMinutes();
+                
+                statusTxt += '<li>' + status[j].status.description + ' : ' + d + '-' + m + '-' + y + ' ' + h + ':' + mi + '</li>';
+            }
+            statusTxt += '</ul>';
+            
+            if(typeof status[j-1] !== 'undefined') {
+                var lastStatusId = status[j-1].status.id;
+                if(lastStatusId != 4) canTake = false;
+            }
+            
+            switch(lastStatusId) {
+                case 2:
+                    var button = '<button onclick="deliveryAction(' + data[i].id + ')" type="button" class="btn btn-info">Change to Delivery</button>';
+                break;
+                case 3:
+                    var button = '<button onclick="deliveredAction(' + data[i].id + ')" type="button" class="btn btn-primary">Change to Delivered</button>';
+                break;
+                default: var button = '';
+            }
+            
+        
+            e += '<tr>';
+                e += '<td>' + (i+1) + '</td>';
+                e += '<td>' + data[i].item.name + '</td>';
+                e += '<td>' + data[i].address + '</td>';
+                e += '<td>' + statusTxt + '<br/>' + button + '</td>';
+            e += '</tr>'
+            
+        }
+        
+        $('#tbodyJob').html(e);
+        
+        sleep(500).then(() => {
+            refreshTableJob();
+        });
+        
+    });
+}
+
+$(document).ready(function(){
+    refreshTableOrder();
+    refreshTableJob();
+});
+</script>
+{% endblock %}
+
+{% block username %}
+{{ data.username }}
+{% endblock %}

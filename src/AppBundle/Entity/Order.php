@@ -29,7 +29,7 @@ class Order
     /**
      * @var string
      *
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $receivedBy;
     

@@ -6,6 +6,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\View\View;
 use AppBundle\Entity\Order;
+use AppBundle\Entity\OrderStatus;
 use AppBundle\Type\OrderType;
  
 class OrderController extends FOSRestController
@@ -21,6 +22,51 @@ class OrderController extends FOSRestController
         $repo = $em->getRepository('AppBundle:Order');
         
         $data = $id ? $repo->find($id) : $repo->findAll();
+
+        return array('data' => $data);
+    }
+    
+    /**
+    * @return array
+    * @Rest\Get("/orderFree.{_format}")
+    * @Rest\View
+    */
+    public function getFreeOrderAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('AppBundle:Order');
+        
+        $data = $repo->findAllFree();
+
+        return array('data' => $data);
+    }
+    
+    /**
+    * @return array
+    * @Rest\Get("/orderByUser/{id}.{_format}")
+    * @Rest\View
+    */
+    public function getOrderByUserAction($id=0)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('AppBundle:Order');
+        
+        $data = $repo->findAllByUser($id);
+
+        return array('data' => $data);
+    }
+    
+    /**
+    * @return array
+    * @Rest\Get("/orderByDriver/{id}.{_format}")
+    * @Rest\View
+    */
+    public function getOrderByDriverAction($id=0)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('AppBundle:Order');
+        
+        $data = $repo->findAllByDriver($id);
 
         return array('data' => $data);
     }
@@ -42,6 +88,16 @@ class OrderController extends FOSRestController
         if($form->isValid())
         {
             $em = $this->getDoctrine()->getManager();
+            
+            $s = $this->getDoctrine()->getManager()
+                ->getRepository('AppBundle:Status')
+                ->find(1);
+            
+            $os = new OrderStatus();
+            $os->setStatusDatetime(date_create(date('Y-m-d H:i:s')));
+            $os->setStatus($s);
+            $os->setOrder($order);
+            $em->persist($os);
             $em->persist($order);
             $em->flush();
      
@@ -63,6 +119,9 @@ class OrderController extends FOSRestController
         $repo = $em->getRepository('AppBundle:Order');
         
         $order = $repo->find($id);
+        
+        //if the order is already taken by another driver
+        if($order->getDriver() != null) return array('error' => 'The order is already taken by a driver');
      
         $form = $this->createForm(new OrderType(), $order, array('method' => 'PATCH'));
      
@@ -71,6 +130,17 @@ class OrderController extends FOSRestController
             if ($form->isValid()) {
                 
                 $em = $this->getDoctrine()->getManager();
+                
+                $s = $this->getDoctrine()->getManager()
+                ->getRepository('AppBundle:Status')
+                ->find(2);
+            
+                $os = new OrderStatus();
+                $os->setStatusDatetime(date_create(date('Y-m-d H:i:s')));
+                $os->setStatus($s);
+                $os->setOrder($order);
+                $em->persist($os);
+                
                 $em->persist($order);
                 $em->flush();
      

@@ -30,7 +30,8 @@ security:
     access_control:
         - { path: ^/api/v1/user, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/v1/item, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/v1/order, role: ROLE_ADMIN }
+        # - { path: ^/api/v1/order, role: ROLE_ADMIN }
+        - { path: ^/, role: IS_AUTHENTICATED_ANONYMOUSLY }
             
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER

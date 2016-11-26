@@ -33,6 +33,13 @@ class User
     private $password;
     
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=false)
+     */
+    private $token;
+    
+    /**
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Order", mappedBy="user")
@@ -134,5 +141,28 @@ class User
     public function getOrders()
     {
         return $this->orders;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     * @return User
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string 
+     */
+    public function getToken()
+    {
+        return $this->token;
     }
 }
