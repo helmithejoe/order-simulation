@@ -208,7 +208,8 @@ var refreshTableOrder = function(){
             for(var j=0;j<status.length;j++) {
                 //if(typeof status[j].status === 'undefined') continue;
                 
-                var formattedDate = new Date(status[j].status_datetime);
+                var datetime = status[j].status_datetime.substring(0, 19);
+                var formattedDate = new Date(datetime);
                 var d = formattedDate.getDate();
                 var m =  formattedDate.getMonth();
                 m += 1;  // JavaScript months are 0-11
@@ -260,7 +261,8 @@ var refreshTableJob = function(){
             for(var j=0;j<status.length;j++) {
                 //if(typeof status[j].status === 'undefined') continue;
                 
-                var formattedDate = new Date(status[j].status_datetime);
+                var datetime = status[j].status_datetime.substring(0, 19);
+                var formattedDate = new Date(datetime);
                 var d = formattedDate.getDate();
                 var m =  formattedDate.getMonth();
                 m += 1;  // JavaScript months are 0-11
