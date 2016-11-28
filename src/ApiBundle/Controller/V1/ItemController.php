@@ -20,7 +20,7 @@ class ItemController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('AppBundle:Item');
         
-        $data = $id ? $repo->find($id) : $repo->findAll();
+        $data = $id ? $repo->find($id) : $repo->findAllItemOnly();
 
         return array('data' => $data);
     }

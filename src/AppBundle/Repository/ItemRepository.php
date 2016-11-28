@@ -12,4 +12,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class ItemRepository extends EntityRepository
 {
+    public function findAllItemOnly() {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT i.id, i.sku, i.name, i.description, i.price FROM AppBundle:Item i'
+            )
+            ->getResult();
+    }
 }
