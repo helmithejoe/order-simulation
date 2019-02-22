@@ -1,72 +1,35 @@
-Symfony Standard Edition
-========================
+# Order Simulation
+Aplikasi Order Simulation mempunyai 2 jenis user Login: `User` dan `Driver`. Aplikasi memiliki 1 `User` dan 2 `Driver`.
+`User` melakukan pesanan dan `Driver` mengambil pesanan untuk diantar ke alamat tujuan. Apabila pesanan telah diambil oleh salah satu `Driver`, maka `Driver` lain sudah tidak bisa mengambil order yang sama.
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony
-application that you can use as the skeleton for your new applications.
 
-For details on how to download and get started with Symfony, see the
-[Installation][1] chapter of the Symfony Documentation.
+## Business Process
 
-What's inside?
---------------
+### 1. User melakukan login dan memilih SKU untuk dipesan
+![alt text](https://github.com/lincgroup/order-simulation/raw/master/images/1-create-order.png "Create Order")
 
-The Symfony Standard Edition is configured with the following defaults:
+### 2. User mengisi alamat tujuan pesanan
+![alt text](https://github.com/lincgroup/order-simulation/raw/master/images/2-input-delivery-address.png "Input Delivery Address")
 
-  * An AppBundle you can use to start coding;
+### 3. Pesanan telah terbuat dengan rincian status dan waktu terbuatnya
+![alt text](https://github.com/lincgroup/order-simulation/raw/master/images/3-order-created.png "Order Created")
 
-  * Twig as the only configured template engine;
+### 4. Driver melakukan login dan melihat ada pesanan yang perlu diproses
+![alt text](https://github.com/lincgroup/order-simulation/raw/master/images/4-driver-view-order.png "Driver View Order")
 
-  * Doctrine ORM/DBAL;
+### 5a. Driver mengambil pesanan tersebut untuk diproses
+![alt text](https://github.com/lincgroup/order-simulation/raw/master/images/5-driver-job-created.png "Driver Job Created")
 
-  * Swiftmailer;
+### 5b. Driver lain yang login sudah tidak dapat melihat order yang telah diambil oleh driver pertama
+![alt text](https://github.com/lincgroup/order-simulation/raw/master/images/5-driver-other-dont-see-order.png "Other Driver Don't See Taken Order")
 
-  * Annotations enabled for everything.
+### 6. Driver siap untuk berangkat dan mengubah status order menjadi "On Delivery"
+![alt text](https://github.com/lincgroup/order-simulation/raw/master/images/6-driver-on-delivery.png "Driver On Delivery")
 
-It comes pre-configured with the following bundles:
+### 7. Driver telah tiba di tujuan dan mengubah status order menjadi "Delivered"
+![alt text](https://github.com/lincgroup/order-simulation/raw/master/images/7-driver-order-delivered.png "Driver Job Created")
 
-  * **FrameworkBundle** - The core Symfony framework bundle
+## Data Diagram
+Aplikasi Order Simulation ini mempunyai struktur data sebagai berikut:
 
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
-
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
-
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
-
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
-
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
-
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
-
-  * [**AsseticBundle**][12] - Adds support for Assetic, an asset processing
-    library
-
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
-
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
-
-  * [**SensioGeneratorBundle**][13] (in dev/test env) - Adds code generation
-    capabilities
-
-  * **DebugBundle** (in dev/test env) - Adds Debug and VarDumper component
-    integration
-
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
-
-Enjoy!
-
-[1]:  https://symfony.com/doc/2.7/book/installation.html
-[6]:  https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  https://symfony.com/doc/2.7/book/doctrine.html
-[8]:  https://symfony.com/doc/2.7/book/templating.html
-[9]:  https://symfony.com/doc/2.7/book/security.html
-[10]: https://symfony.com/doc/2.7/cookbook/email.html
-[11]: https://symfony.com/doc/2.7/cookbook/logging/monolog.html
-[12]: https://symfony.com/doc/2.7/cookbook/assetic/asset_management.html
-[13]: https://symfony.com/doc/2.7/bundles/SensioGeneratorBundle/index.html
+![alt text](https://github.com/lincgroup/order-simulation/raw/master/images/0-data-diagram.png "Data Diagram")
